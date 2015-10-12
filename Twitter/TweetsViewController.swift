@@ -8,17 +8,29 @@
 
 import UIKit
 
-class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, TweetsTableViewCellDelegate {
+    
     var tweets: [Tweet]?
+    var hbMenuDelegate: HBMenuViewControllerDelegate?
+    var isMentionsView = false
+ 
 
+    
     @IBOutlet weak var tableView: UITableView!
    
+   
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
+        if isMentionsView {
+            navigationItem.title = "Mentions"
+        } else {
+            navigationItem.title = "Home"
+        }
         self.tableView.reloadData()
         //tableView.estimatedRowHeight = 200
         //tableView.rowHeight = UITableViewAutomaticDimension
@@ -59,18 +71,31 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func displayTweets() {
-        TwitterClient.sharedInstance.homeTimelineWithParams(nil, completion: { (tweets, error) -> () in
-            if self.tableView.pullToRefreshView != nil {
-                self.tableView.pullToRefreshView.stopAnimating()
-            }
-            self.tweets = tweets
-            //print("Tweets count in display tweeets is \(self.tweets!.count)")
-            self.tableView.reloadData()
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                return ()
+        if isMentionsView {
+            TwitterClient.sharedInstance.mentionsTimelineWithParams(nil, completion: { (tweets, error) -> () in
+                self.tweets = tweets
+                self.tableView.reloadData()
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    return ()
+                })
             })
-        })
+
+        } else {
+            TwitterClient.sharedInstance.homeTimelineWithParams(nil, completion: { (tweets, error) -> () in
+                if self.tableView.pullToRefreshView != nil {
+                    self.tableView.pullToRefreshView.stopAnimating()
+                }
+                self.tweets = tweets
+                //print("Tweets count in display tweeets is \(self.tweets!.count)")
+                self.tableView.reloadData()
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    return ()
+                })
+            })
+
+        }
+
     }
 
     
@@ -121,10 +146,25 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         // Pass the selected object to the new view controller.
     }
     */
-    @IBAction func onSignOut(sender: AnyObject) {
+    /*@IBAction func onSignOut(sender: AnyObject) {
         User.currentUser?.logout()
+    }*/
+    
+    func showProfile1(cell: TweetsTableViewCell) {
+        print("here2")
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let ProfViewController = mainStoryboard.instantiateViewControllerWithIdentifier("ProfileViewController") as! ProfileViewController
+        ProfViewController.user = cell.tweet!.user
+        ProfViewController.viewWillAppear(true)
+        
+        
+        navigationController?.presentViewController(ProfViewController, animated: true, completion: nil)
     }
+
    
+    @IBAction func onMenuTap(sender: AnyObject) {
+        hbMenuDelegate?.toggleHBMenu()
+    }
     
 
 }

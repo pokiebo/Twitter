@@ -25,8 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //let vc = storyboard.instantiateViewControllerWithIdentifier("TweetsViewController") as UIViewController
             
             
-            let vc = storyboard.instantiateViewControllerWithIdentifier("navController") as UIViewController
-                        window?.rootViewController = vc
+            //let vc = storyboard.instantiateViewControllerWithIdentifier("navController") as UIViewController
+                        //window?.rootViewController = vc
+            
+            //let vc = storyboard.instantiateViewControllerWithIdentifier("testNav") as UIViewController
+            
+            let vc = storyboard.instantiateViewControllerWithIdentifier("ContainerVC") as UIViewController
+            window?.rootViewController = vc
             
         }
         

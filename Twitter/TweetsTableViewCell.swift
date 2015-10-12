@@ -23,7 +23,7 @@ class TweetsTableViewCell: UITableViewCell {
     @IBOutlet weak var screenNameLabel: UILabel!
     
     @IBOutlet weak var nameLabel: UILabel!
-  
+    var delegate: TweetsTableViewCellDelegate?
     var id: Int?
     
     
@@ -43,12 +43,35 @@ class TweetsTableViewCell: UITableViewCell {
         }
     }
     
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         profileImageView.layer.cornerRadius = 3
+       let tapGesture = UITapGestureRecognizer(target: self, action: "imageTapped:")
+        
+        tapGesture.numberOfTapsRequired = 1
+        profileImageView.userInteractionEnabled = true
+        profileImageView.addGestureRecognizer(tapGesture)
+        
         // Initialization code
     }
 
+    func imageTapped(sender: UIGestureRecognizer) {
+        
+        /*let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let ProfViewController = mainStoryboard.instantiateViewControllerWithIdentifier("ProfileViewController") as! ProfileViewController
+        ProfViewController.user = self.tweet!.user
+        ProfViewController.viewWillAppear(true)
+        
+        
+        navigationController?.presentViewController(ProfViewController, animated: true, completion: nil)*/
+        
+        delegate?.showProfile1(self)
+        
+    }
+    
+    
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
@@ -73,9 +96,15 @@ class TweetsTableViewCell: UITableViewCell {
         })
         
     }
+    
+    
 
     @IBAction func onReply(sender: AnyObject) {
         
         
     }
+}
+
+protocol TweetsTableViewCellDelegate {
+    func showProfile1(cell: TweetsTableViewCell)
 }

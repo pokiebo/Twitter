@@ -18,16 +18,24 @@ class User: NSObject {
     var screenname: String
     var profileImageUrl: NSURL
     var tagline: String
+    var numTweets: Int
+    var numFollowers: Int
+    var numFollowing: Int
+    var largeProfileImageUrl: NSURL
     var dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
-        
         self.name = dictionary["name"] as! String
         self.screenname = dictionary["screen_name"] as! String
-        
         self.profileImageUrl = NSURL(string: (dictionary["profile_image_url"] as! String).stringByReplacingOccurrencesOfString("_normal", withString: "_bigger"))!
         self.tagline = dictionary["description"] as! String
+        self.numTweets = dictionary["statuses_count"] as! Int
+        self.numFollowers = dictionary["followers_count"] as! Int
+        self.numFollowing = dictionary["friends_count"] as! Int
+        self.largeProfileImageUrl = NSURL(string: (dictionary["profile_image_url"] as! String).stringByReplacingOccurrencesOfString("_normal", withString: ""))!
+        
+        
     }
     
  
